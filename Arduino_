@@ -1,0 +1,13 @@
+int P=2;
+int val=50;
+
+void setup() {
+Serial.begin(9600);
+
+}
+
+void loop() {
+  val= (analogRead(P)/4);
+  Serial.println(val);
+  delay(20);
+}
