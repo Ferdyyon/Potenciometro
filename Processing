@@ -1,0 +1,23 @@
+import processing.serial.*; 
+import cc.arduino.*; 
+ 
+Arduino arduino; 
+int L=13; 
+int P=2; 
+int va=400; 
+void setup() { 
+ size(500, 500); 
+ arduino = new Arduino(this, "COM4", 9600); 
+ arduino.pinMode(L, Arduino.OUTPUT); 
+} 
+ 
+void draw() { 
+ //lee la señal del potenciometro (0..1024), divide por cuatro (0..255) 
+ va = (arduino.analogRead(P)/4); 
+ //envia al LED el valor leido y ajustado (0..255) señal PWM 
+ arduino.analogWrite(L, va); 
+ //varia la intensidad del color de la ventana de processing 
+ fill(255,0,0);
+ rect(50,50,100,50);
+ println(va);
+}
