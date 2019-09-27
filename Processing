@@ -1,47 +1,60 @@
 
- 
+
 import processing.serial.*;
 Serial Puerto;    // El puerto serial
 int xPos = 1;     // Posicion horizontal del grafico
-float inByte = 0; // Variable de almacenamiento para la lectura del potenciometro 
-float max = 0; 
+float inByte = 0;// Variable de almacenamiento para la lectura del potenciometro 
+float max = 852; 
+
 void setup () {
   size(500, 500);         // Tamano de la pantalla:
   println(Serial.list()); // Muestra el puerto conectado
   Puerto = new Serial(this, Serial.list()[0], 9600); // En el lugar de [0], debe ir el puerto
-                                                     // al que esta conectado el Arduino
+  // al que esta conectado el Arduino
   Puerto.bufferUntil('\n'); // Lee el puerto serial hasta encontrar un LF (Line feed)
   background(0);          // Fondo de pantalla
 }
- 
+
 void draw () {
- background(0);
- fill(0,0,180);
- rect(100,30,300,200);
- fill(255);
-  textSize(50);
-  text("VOLUMEN",130,100);
-  text("CONTROL",130,170);
-  fill(0,255,0);
-  
-  rect(40,320,inByte,50);
-  textSize(20);
-  text("MIN",40,400);// minima
-  textSize(20);
-  text("MAX",410,400);// maxima
+  background(0);
+
+  fill(255, 0, 0);
+  rect(355, 320, 100, 50); // Cuadro rojo de valor maximo 
+
+  // Cuadro azul de fondo del titulo
+  fill(0, 0, 180);
+  rect(100, 30, 300, 200);
+
+  // Titulo
   fill(255);
- 
+  textSize(50);     
+  text("VOLUMEN", 130, 100);
+  text("CONTROL", 130, 170);
+  fill(0, 255, 0);
+
+  // Control de volumen (barra verde)
+  rect(40, 320, inByte, 50);
+  textSize(20);
+  text("MIN", 40, 400);
+  textSize(20);
+  text("MAX", 410, 400);
+
+  // Mensaje de alerta
+  fill(255, 255, 0);
+  textSize(18);
+  text("!ALERTA¡", 200, 450);
+  text("Si sobrepasa el cuadro rojo causara daños auditivos", 20, 475);
 }
- 
- 
+
+
 void serialEvent (Serial Puerto) {
   String inString = Puerto.readStringUntil('\n'); // Lee la cadena hasta encontrar un enter
- 
+  // String inMax = Puerto.readStringUntil('\n');
+
   if (inString != null) {
     inString = trim(inString); // Se quita los espacios en blanco:
     inByte = float(inString); // Convierte en flotante el String leido
     println(inByte);           // Muestra el dato convertido
     inByte = map(inByte, 0, 1023, 0, height); // Convierte el dato en la altura de salida
-}
-  
+  }
 }
