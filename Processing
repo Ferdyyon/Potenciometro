@@ -1,23 +1,47 @@
-import processing.serial.*; 
-import cc.arduino.*; 
+
  
-Arduino arduino; 
-int L=13; 
-int P=2; 
-int va=400; 
-void setup() { 
- size(500, 500); 
- arduino = new Arduino(this, "COM4", 9600); 
- arduino.pinMode(L, Arduino.OUTPUT); 
-} 
+import processing.serial.*;
+Serial Puerto;    // El puerto serial
+int xPos = 1;     // Posicion horizontal del grafico
+float inByte = 0; // Variable de almacenamiento para la lectura del potenciometro 
+float max = 0; 
+void setup () {
+  size(500, 500);         // Tamano de la pantalla:
+  println(Serial.list()); // Muestra el puerto conectado
+  Puerto = new Serial(this, Serial.list()[0], 9600); // En el lugar de [0], debe ir el puerto
+                                                     // al que esta conectado el Arduino
+  Puerto.bufferUntil('\n'); // Lee el puerto serial hasta encontrar un LF (Line feed)
+  background(0);          // Fondo de pantalla
+}
  
-void draw() { 
- //lee la señal del potenciometro (0..1024), divide por cuatro (0..255) 
- va = (arduino.analogRead(P)/4); 
- //envia al LED el valor leido y ajustado (0..255) señal PWM 
- arduino.analogWrite(L, va); 
- //varia la intensidad del color de la ventana de processing 
- fill(255,0,0);
- rect(50,50,100,50);
- println(va);
+void draw () {
+ background(0);
+ fill(0,0,180);
+ rect(100,30,300,200);
+ fill(255);
+  textSize(50);
+  text("VOLUMEN",130,100);
+  text("CONTROL",130,170);
+  fill(0,255,0);
+  
+  rect(40,320,inByte,50);
+  textSize(20);
+  text("MIN",40,400);// minima
+  textSize(20);
+  text("MAX",410,400);// maxima
+  fill(255);
+ 
+}
+ 
+ 
+void serialEvent (Serial Puerto) {
+  String inString = Puerto.readStringUntil('\n'); // Lee la cadena hasta encontrar un enter
+ 
+  if (inString != null) {
+    inString = trim(inString); // Se quita los espacios en blanco:
+    inByte = float(inString); // Convierte en flotante el String leido
+    println(inByte);           // Muestra el dato convertido
+    inByte = map(inByte, 0, 1023, 0, height); // Convierte el dato en la altura de salida
+}
+  
 }
