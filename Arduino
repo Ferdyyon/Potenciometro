@@ -1,13 +1,9 @@
-int P=2;
-int val=50;
-
 void setup() {
-Serial.begin(9600);
-
+  Serial.begin(9600); // Inicia la comunicación Serial a 9600 bps
 }
-
+ 
 void loop() {
-  val= (analogRead(P)/4);
-  Serial.println(val);
-  delay(20);
+  Serial.println(analogRead(A0)/1.2); // Envia el valor de la entrada analogica:
+  delay(2); // Espera un bit para la conversion analoga - digital para estabilizar 
+            // despues de leer
 }
